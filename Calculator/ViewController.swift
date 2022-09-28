@@ -3,8 +3,11 @@
 //  Calculator
 //
 //  Created by Angela Yu on 10/09/2019.
+//  Written by Sekaye Knutson
 //  Copyright © 2019 London App Brewery. All rights reserved.
+//  Copyright © 2022 Sekaye Knutson. All rights reserved.
 //
+// Idea! Let users pick color themes for their calculator. The menu disappears once user input begins (e.g, all clear hasn't been pressed)
 
 import UIKit
 
@@ -12,20 +15,73 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var displayLabel: UILabel!
     
+    private var isFinishedTyping: Bool = true
+    private var isDecimal = false
+    private var displayValue: Double {
+        get {
+            guard let number = Double(displayLabel.text!)
+            else { fatalError("Cannot convert display label text to a Double")}
+            return number
+        }
+        set {
+            displayLabel.text = String(newValue)
+        }
+    }
+    
     
     
     @IBAction func calcButtonPressed(_ sender: UIButton) {
         
-        //What should happen when a non-number button is pressed
-    
+        isFinishedTyping = true
+        isDecimal = false
+        
+
+        
+        if let calcMethod = sender.currentTitle {
+            switch calcMethod
+            {
+            case "+/-":
+                displayValue *= 1
+            case "AC":
+                displayValue = 0
+            case "%":
+                displayValue /= 100.0
+            default:
+                print("Error performing function")
+            }
+        }
     }
 
     
     @IBAction func numButtonPressed(_ sender: UIButton) {
         
-        
-    
+        if let numValue = sender.currentTitle {
+            if isFinishedTyping {
+                displayLabel.text = numValue
+                isFinishedTyping = false
+            }
+            else {
+                switch numValue
+                {
+                case ".":
+                    print(isDecimal)
+                    if isDecimal { return }
+                    switch displayLabel.text
+                    {
+                    case "0":
+                        return
+                    case ".":
+                        return
+                    default:
+                        isDecimal = true
+                    }
+                    fallthrough
+                    
+                default:
+                    displayLabel.text = displayLabel.text! + numValue
+                }
+            }
+        }
     }
-
 }
 
