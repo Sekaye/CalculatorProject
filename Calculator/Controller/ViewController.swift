@@ -29,27 +29,17 @@ class ViewController: UIViewController {
     }
     
     
-    
     @IBAction func calcButtonPressed(_ sender: UIButton) {
         
         isFinishedTyping = true
         isDecimal = false
         
-
-        
-        if let calcMethod = sender.currentTitle {
-            switch calcMethod
-            {
-            case "+/-":
-                displayValue *= 1
-            case "AC":
-                displayValue = 0
-            case "%":
-                displayValue /= 100.0
-            default:
-                print("Error performing function")
-            }
+        if let calcType = sender.currentTitle {
+            let calculation = CalculationLogic(number: displayValue)
+            guard let result = calculation.calculate(with: calcType) else {fatalError("Calculation results in nil.")}
+            displayValue = result
         }
+
     }
 
     
