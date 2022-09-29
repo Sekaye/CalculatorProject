@@ -11,25 +11,52 @@ import UIKit
 
 struct CalculationLogic {
     
-    var number: Double
+    private var number: Double?
     
-    init(number: Double) {
-        self.number = number
+    private var intermediateCalc: (num1: Double, calculation: String)?
+    
+    mutating func setNumber(_ num: Double) {
+        self.number = num
     }
     
-    func calculate(with calcType: String) -> Double? {
+    mutating func calculate(_ calcType: String) -> Double? {
         
+        if let n = number {
             switch calcType
             {
             case "+/-":
-                return number * -1
+                return n * -1
             case "AC":
                 return 0
             case "%":
-                return number / 100.0
+                return n / 100.0
+            case "=":
+               return performOperation(n2: n)
             default:
-                print("Error performing function")
+                intermediateCalc = (num1: n, calculation: calcType)
                 return nil
             }
+        } else { return nil }
+    }
+    
+    private func performOperation(n2: Double) -> Double? {
+        if let n1 = intermediateCalc?.num1,
+            let operation = intermediateCalc?.calculation
+        // "If the number in intermediateCalc is not nil, and the calculation in intermediateCalc is not nil: THEN...
+        {
+            switch operation {
+            case "÷":
+                return n1 / n2
+            case "×":
+                return n1 * n2
+            case "-":
+                return n1 - n2
+            case "+":
+                return n1 + n2
+            default:
+                fatalError("Unknown operation")
+                return nil
+            }
+        } else { return nil }
     }
 }

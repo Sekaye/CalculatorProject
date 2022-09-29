@@ -13,8 +13,11 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    //Outlets
     @IBOutlet weak var displayLabel: UILabel!
     
+    //Properties
+    private var calculation = CalculationLogic()
     private var isFinishedTyping: Bool = true
     private var isDecimal = false
     private var displayValue: Double {
@@ -28,18 +31,19 @@ class ViewController: UIViewController {
         }
     }
     
-    
+    // Actions
     @IBAction func calcButtonPressed(_ sender: UIButton) {
         
         isFinishedTyping = true
         isDecimal = false
         
+        calculation.setNumber(displayValue)
+        
         if let calcType = sender.currentTitle {
-            let calculation = CalculationLogic(number: displayValue)
-            guard let result = calculation.calculate(with: calcType) else {fatalError("Calculation results in nil.")}
-            displayValue = result
+            if let result = calculation.calculate(calcType) {
+                displayValue = result
+            }
         }
-
     }
 
     
